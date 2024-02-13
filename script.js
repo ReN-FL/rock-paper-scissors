@@ -12,6 +12,20 @@ function getComputerChoice() {
     return choice;
   }
 }
+function getPlayerChoice(e) {
+  let playerChoice = e.target.value;
+  if (playerChoice === undefined) {
+    resultTxt.textContent = 'You missed';
+    return;
+  }
+  playGame(playerChoice);
+}
+const controls = document.querySelector('#controls');
+const resultTxt = document.querySelector('#result-txt');
+const round = document.querySelector('#round');
+const pscore = document.querySelector('#Pscore');
+const cscore = document.querySelector('#Cscore');
+controls.addEventListener('click', getPlayerChoice);
 function playRound(playerSelection, computerSelection) {
   playerSelection = playerSelection.toLowerCase();
   computerSelection = computerSelection.toLowerCase();
@@ -27,40 +41,44 @@ function playRound(playerSelection, computerSelection) {
     return `Computer win, ${computerSelection} beats ${playerSelection}`;
   }
 }
-function playGame() {
-  let i = 0;
-  let playerScore = 0;
-  let computerScore = 0;
-  while (i < 5) {
+let i = 0;
+let playerScore = 0;
+let computerScore = 0;
+function playGame(choice) {
+  if (i < 5) {
     const computerChoice = getComputerChoice();
-    const playerChoice = prompt('paper, rock or scissors?');
+    const playerChoice = choice;
     let roundResult = playRound(playerChoice, computerChoice);
-    console.log(roundResult);
+    resultTxt.textContent = roundResult;
     if (roundResult.substring(0, 11) == 'Player win,') {
       playerScore++;
-      console.log('Player Score', playerScore);
+      pscore.textContent = playerScore;
     } else if (roundResult.substring(0, 13) == 'Computer win,') {
       computerScore++;
-      console.log('Computer Score', computerScore);
+      cscore.textContent = computerScore;
     } else {
     }
     i++;
-  }
-  if (playerScore > computerScore) {
-    console.log(
-      `Final Score, Player: ${playerScore} Computer: ${computerScore}`
-    );
-    return 'Player Won the game';
-  } else if (computerScore > playerScore) {
-    console.log(
-      `Final Score, Player: ${playerScore} Computer: ${computerScore}`
-    );
-    return 'Computer Won the game';
-  } else {
-    console.log(
-      `Final Score, Player: ${playerScore} Computer: ${computerScore}`
-    );
-    return 'its a tie, No one won :(';
+    round.textContent = `Round ${i}`;
+  } else if ((i = 5)) {
+    endGame(playerScore, computerScore);
   }
 }
-console.log(playGame());
+function endGame(playerS, computerS) {
+  if (playerS > computerS) {
+    resultTxt.textContent = `Final Score, Player: ${playerS} Computer: ${computerS}\n Player Won the game`;
+  } else if (computerS > playerS) {
+    resultTxt.textContent = `Final Score, Player: ${playerS} Computer: ${computerS}\n Computer Won the game`;
+  } else {
+    resultTxt.textContent = `Final Score, Player: ${playerS} Computer: ${computerS}\n its a tie, No one won :(`;
+  }
+  clearResults();
+}
+function clearResults() {
+  i = 0;
+  playerScore = 0;
+  pscore.textContent = playerScore;
+  computerScore = 0;
+  cscore.textContent = computerScore;
+  round.textContent = `Round ${i}`;
+}
